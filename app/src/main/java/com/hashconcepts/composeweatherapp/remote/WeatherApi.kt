@@ -1,5 +1,6 @@
-package com.hashconcepts.composeweatherapp
+package com.hashconcepts.composeweatherapp.remote
 
+import com.hashconcepts.composeweatherapp.remote.dto.WeatherResponse
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.GET
@@ -15,6 +16,7 @@ interface WeatherApi {
     suspend fun fetchWeatherData(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
-        @Query("hourly") hourly: String = "temperature_2m"
-    ): Response<ResponseBody>
+        @Query("hourly") hourly: String = "temperature_2m",
+        @Query("current_weather") currentWeather: Boolean = true,
+    ): Response<WeatherResponse>
 }

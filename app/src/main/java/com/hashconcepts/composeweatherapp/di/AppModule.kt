@@ -2,7 +2,7 @@ package com.hashconcepts.composeweatherapp.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.hashconcepts.composeweatherapp.WeatherApi
+import com.hashconcepts.composeweatherapp.remote.WeatherApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
