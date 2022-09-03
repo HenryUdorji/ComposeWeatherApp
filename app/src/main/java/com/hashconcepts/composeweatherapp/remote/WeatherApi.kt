@@ -12,7 +12,7 @@ import retrofit2.http.Query
  * @author  ifechukwu.udorji
  */
 interface WeatherApi {
-    @GET("https://api.open-meteo.com/v1/forecast")
+    @GET("v1/forecast")
     suspend fun fetchWeatherData(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,

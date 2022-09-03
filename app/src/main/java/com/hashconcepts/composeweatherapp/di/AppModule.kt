@@ -50,7 +50,7 @@ object AppModule {
         okHttpClient: OkHttpClient
     ): WeatherApi {
         return Retrofit.Builder()
-            .baseUrl("")
+            .baseUrl("https://api.open-meteo.com/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
