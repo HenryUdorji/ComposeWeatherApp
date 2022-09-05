@@ -1,19 +1,28 @@
 package com.hashconcepts.composeweatherapp
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.hashconcepts.composeweatherapp.components.PermissionRationaleDialog
 import com.hashconcepts.composeweatherapp.ui.theme.ComposeWeatherAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -33,7 +42,82 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(viewModel: MainViewModel = hiltViewModel()) {
-    
+    val homeScreenState = viewModel.homeScreenState
+    val scaffoldState = rememberScaffoldState()
+
+    LaunchedEffect(key1 = true) {
+        viewModel.eventChannelFlow.collectLatest { result ->
+            when(result) {
+                is ResultEvents.ShowMessage -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        result.message,
+                        duration = SnackbarDuration.Short
+                    )
+                }
+                else -> {}
+            }
+        }
+    }
+
+    if (homeScreenState.locationPermissionsGranted) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            scaffoldState = scaffoldState
+        ) {
+            Text(
+                text = "PERMISSION GRANTED",
+                style = MaterialTheme.typography.body1,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+    } else {
+        ShowPermissionUI {
+            viewModel.onEvents(HomeScreenEvents.OnPermissionGranted(it))
+        }
+    }
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun ShowPermissionUI(onPermissionGranted: (Boolean) -> Unit) {
+    val locationPermissionsState = rememberMultiplePermissionsState(
+        listOf(
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+        )
+    )
+
+    val context = LocalContext.current
+    var showPermissionRationale by remember { mutableStateOf(true) }
+    if (locationPermissionsState.allPermissionsGranted) {
+        //Location permission granted
+        onPermissionGranted(true)
+    } else if (locationPermissionsState.shouldShowRationale) {
+        if (showPermissionRationale) {
+            PermissionRationaleDialog(
+                message = "Compose Weather App requires Location permission to show accurate weather information",
+                icon = R.drawable.cloudy,
+                onRequestPermission = {
+                    showPermissionRationale = false
+
+                    //Launch Settings
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri: Uri = Uri.fromParts("package", context.packageName, null)
+                    intent.data = uri
+                    context.startActivity(intent)
+                },
+                onDismissRequest = {
+                    showPermissionRationale = false
+                }
+            )
+        }
+    } else {
+        SideEffect {
+            locationPermissionsState.launchMultiplePermissionRequest()
+        }
+    }
 }
