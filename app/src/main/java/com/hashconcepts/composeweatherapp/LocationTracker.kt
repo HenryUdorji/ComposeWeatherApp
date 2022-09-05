@@ -20,11 +20,11 @@ import javax.inject.Inject
  * @project ComposeWeatherApp
  * @author  ifechukwu.udorji
  */
+@ExperimentalCoroutinesApi
 class LocationTrackerImpl @Inject constructor(
     private val fusedLocationProviderClient: FusedLocationProviderClient,
     private val application: Application
 ) : LocationTracker {
-    @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun getLocation(): Location? {
         val hasFineLocationPermission = ContextCompat.checkSelfPermission(
             application,
@@ -47,14 +47,26 @@ class LocationTrackerImpl @Inject constructor(
 
         val priority = Priority.PRIORITY_BALANCED_POWER_ACCURACY
         val cancellationTokenSource = CancellationTokenSource()
-        return suspendCancellableCoroutine {
-            fusedLocationProviderClient.getCurrentLocation(priority, cancellationTokenSource.token)
-                .addOnSuccessListener { location ->
-                    Timber.d("LONGITUDE: ${location.longitude} \n LATITUDE: ${location.latitude}")
+        return suspendCancellableCoroutine { cont ->
+            fusedLocationProviderClient.getCurrentLocation(priority, cancellationTokenSource.token).apply {
+                if(isComplete) {
+                    if(isSuccessful) {
+                        cont.resume(result) { Timber.e(it) }
+                    } else {
+                        cont.resume(null) { Timber.e(it) }
+                    }
+                    return@suspendCancellableCoroutine
                 }
-                .addOnFailureListener { exception ->
-                    Timber.e("TAG", "onCreate: ${exception.localizedMessage}")
+                addOnSuccessListener {
+                    cont.resume(it, null)
                 }
+                addOnFailureListener {
+                    cont.resume(null) { Timber.e(it) }
+                }
+                addOnCanceledListener {
+                    cont.cancel()
+                }
+            }
         }
     }
 
