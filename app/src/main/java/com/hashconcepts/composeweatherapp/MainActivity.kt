@@ -3,6 +3,7 @@ package com.hashconcepts.composeweatherapp
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -15,19 +16,30 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import com.hashconcepts.composeweatherapp.components.PermissionRationaleDialog
 import com.hashconcepts.composeweatherapp.ui.theme.ComposeWeatherAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+
         setContent {
             ComposeWeatherAppTheme {
                 // A surface container using the 'background' color from the theme
@@ -35,7 +47,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    HomeScreen()
+                    HomeScreen(fusedLocationProviderClient)
                 }
             }
         }
@@ -44,7 +56,7 @@ class MainActivity : ComponentActivity() {
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun HomeScreen(viewModel: MainViewModel = hiltViewModel()) {
+fun HomeScreen(fusedLocationProviderClient: FusedLocationProviderClient, viewModel: MainViewModel = hiltViewModel()) {
     val homeScreenState = viewModel.homeScreenState
     val scaffoldState = rememberScaffoldState()
 

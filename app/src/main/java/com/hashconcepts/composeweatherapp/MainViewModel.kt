@@ -32,10 +32,6 @@ class MainViewModel @Inject constructor(
     var homeScreenState by mutableStateOf(HomeScreenState())
         private set
 
-    init {
-        fetchWeatherData()
-    }
-
     fun onEvents(events: HomeScreenEvents) {
         when (events) {
             is HomeScreenEvents.OnPermissionGranted -> {
@@ -47,7 +43,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun fetchWeatherData() {
+    fun fetchWeatherData() {
         weatherRepository.fetchWeatherData(6.54, 3.35).onEach { result ->
             when (result) {
                 is Resource.Loading -> Log.d("OBSERVE ::::::::::::::", "LOADING")
