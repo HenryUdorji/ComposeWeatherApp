@@ -1,6 +1,5 @@
-package com.hashconcepts.composeweatherapp
+package com.hashconcepts.composeweatherapp.remote
 
-import com.hashconcepts.composeweatherapp.remote.WeatherApi
 import com.hashconcepts.composeweatherapp.remote.dto.WeatherResponse
 import com.hashconcepts.composeweatherapp.util.Resource
 import kotlinx.coroutines.flow.Flow
