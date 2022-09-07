@@ -9,3 +9,4 @@ val Teal200 = Color(0xFF03DAC5)
 
 val PrimaryLight = Color(0xFF15C0F6)
 val PrimaryDark = Color(0xFF1068F0)
+val OffWhite = Color(0xFFF1F1F1)
