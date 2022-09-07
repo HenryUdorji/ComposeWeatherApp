@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -20,6 +21,7 @@ import com.hashconcepts.composeweatherapp.components.PermissionRationaleDialog
 import com.hashconcepts.composeweatherapp.ui.theme.ComposeWeatherAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 
 @AndroidEntryPoint
@@ -63,14 +65,10 @@ fun HomeScreen(viewModel: MainViewModel = hiltViewModel()) {
     if (homeScreenState.locationPermissionsGranted) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            scaffoldState = scaffoldState
+            scaffoldState = scaffoldState,
+            backgroundColor = Color.Black
         ) {
-            Text(
-                text = "PERMISSION GRANTED",
-                style = MaterialTheme.typography.body1,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxSize()
-            )
+
         }
     } else {
         ShowPermissionUI {

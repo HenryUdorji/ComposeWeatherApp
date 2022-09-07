@@ -37,6 +37,7 @@ class MainViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             if (locationTracker.getLocation() != null) {
+                homeScreenState = homeScreenState.copy(locationPermissionsGranted = true,)
                 val latitude = locationTracker.getLocation()?.latitude
                 val longitude = locationTracker.getLocation()?.longitude
 
@@ -61,9 +62,14 @@ class MainViewModel @Inject constructor(
     fun fetchWeatherData(latitude: Double, longitude: Double) {
         weatherRepository.fetchWeatherData(latitude, longitude).onEach { result ->
             when (result) {
-                is Resource.Loading -> Log.d("OBSERVE ::::::::::::::", "LOADING")
-                is Resource.Error -> Log.d("OBSERVE ::::::::::::::", "${result.message}")
-                is Resource.Success -> Log.d("OBSERVE ::::::::::::::", "${result.data}")
+                is Resource.Loading -> homeScreenState = homeScreenState.copy(loading = true)
+                is Resource.Error -> {
+                    homeScreenState = homeScreenState.copy(loading = false)
+                    eventChannel.send(ResultEvents.ShowMessage(result.message!!))
+                }
+                is Resource.Success -> {
+                    homeScreenState = homeScreenState.copy(loading = false, weatherResponse = result.data)
+                }
             }
         }.launchIn(viewModelScope)
     }

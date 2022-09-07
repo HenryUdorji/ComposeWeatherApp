@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/ifechukwu.udorji/WorkFolder/Personal/Android/Compose/ComposeWeatherApp/app/src/main/res/drawable/drop.xml" value="0.129" />
+        <entry key="..\:/Users/ifechukwu.udorji/WorkFolder/Personal/Android/Compose/ComposeWeatherApp/app/src/main/res/drawable/ic_cloudy.xml" value="0.129" />
+        <entry key="..\:/Users/ifechukwu.udorji/WorkFolder/Personal/Android/Compose/ComposeWeatherApp/app/src/main/res/drawable/ic_heavysnow.xml" value="0.129" />
+        <entry key="..\:/Users/ifechukwu.udorji/WorkFolder/Personal/Android/Compose/ComposeWeatherApp/app/src/main/res/drawable/ic_pressure.xml" value="0.129" />
+        <entry key="..\:/Users/ifechukwu.udorji/WorkFolder/Personal/Android/Compose/ComposeWeatherApp/app/src/main/res/drawable/ic_rainshower.xml" value="0.129" />
+        <entry key="..\:/Users/ifechukwu.udorji/WorkFolder/Personal/Android/Compose/ComposeWeatherApp/app/src/main/res/drawable/ic_rainy.xml" value="0.129" />
+        <entry key="..\:/Users/ifechukwu.udorji/WorkFolder/Personal/Android/Compose/ComposeWeatherApp/app/src/main/res/drawable/ic_snowy.xml" value="0.129" />
+        <entry key="..\:/Users/ifechukwu.udorji/WorkFolder/Personal/Android/Compose/ComposeWeatherApp/app/src/main/res/drawable/ic_snowyrainy.xml" value="0.129" />
+        <entry key="..\:/Users/ifechukwu.udorji/WorkFolder/Personal/Android/Compose/ComposeWeatherApp/app/src/main/res/drawable/ic_sunny.xml" value="0.129" />
+        <entry key="..\:/Users/ifechukwu.udorji/WorkFolder/Personal/Android/Compose/ComposeWeatherApp/app/src/main/res/drawable/ic_sunnycloudy.xml" value="0.129" />
+        <entry key="..\:/Users/ifechukwu.udorji/WorkFolder/Personal/Android/Compose/ComposeWeatherApp/app/src/main/res/drawable/ic_sunnyrainy.xml" value="0.129" />
+        <entry key="..\:/Users/ifechukwu.udorji/WorkFolder/Personal/Android/Compose/ComposeWeatherApp/app/src/main/res/drawable/ic_thunder.xml" value="0.129" />
+        <entry key="..\:/Users/ifechukwu.udorji/WorkFolder/Personal/Android/Compose/ComposeWeatherApp/app/src/main/res/drawable/ic_very_cloudy.xml" value="0.129" />
+        <entry key="..\:/Users/ifechukwu.udorji/WorkFolder/Personal/Android/Compose/ComposeWeatherApp/app/src/main/res/drawable/ic_wind.xml" value="0.129" />
+        <entry key="..\:/Users/ifechukwu.udorji/WorkFolder/Personal/Android/Compose/ComposeWeatherApp/app/src/main/res/drawable/ic_windy.xml" value="0.129" />
+        <entry key="..\:/Users/ifechukwu.udorji/WorkFolder/Personal/Android/Compose/ComposeWeatherApp/app/src/main/res/drawable/rainythunder.xml" value="0.129" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
