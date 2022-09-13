@@ -74,3 +74,9 @@ class MainViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 }
+
+/*
+* val odt: OffsetDateTime = OffsetDateTime.parse(currentWeather?.time)
+        val instant: Instant = odt.toInstant()
+        val date: Date = Date.from(instant)
+        * */

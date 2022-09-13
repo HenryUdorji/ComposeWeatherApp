@@ -2,7 +2,6 @@ package com.hashconcepts.composeweatherapp
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.fonts.FontStyle
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -11,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,10 +27,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.hashconcepts.composeweatherapp.components.PermissionRationaleDialog
+import com.hashconcepts.composeweatherapp.remote.dto.WeatherResponse
 import com.hashconcepts.composeweatherapp.ui.theme.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import timber.log.Timber
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.util.*
 
 
 @AndroidEntryPoint
@@ -79,7 +81,8 @@ fun HomeScreen(viewModel: MainViewModel = hiltViewModel()) {
             backgroundColor = Color.Black
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                CurrentWeatherSection()
+                CurrentWeatherSection(viewModel.homeScreenState.weatherResponse)
+                TodayWeatherSection()
             }
         }
     } else {
@@ -90,7 +93,24 @@ fun HomeScreen(viewModel: MainViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun CurrentWeatherSection() {
+fun TodayWeatherSection() {
+    Column(
+        modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 20.dp)
+    ) {
+        Text(text = "Today", style = MaterialTheme.typography.h1)
+
+        LazyRow(content = {
+
+        })
+    }
+}
+
+@Composable
+fun CurrentWeatherSection(weatherResponse: WeatherResponse?) {
+    val currentWeather = weatherResponse?.currentWeather
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -99,17 +119,30 @@ fun CurrentWeatherSection() {
                 shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)
             )
     ) {
-        Text(
-            text = "Minsk",
-            style = MaterialTheme.typography.body1,
-            fontSize = 20.sp,
-            color = Color.White,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
+        Spacer(modifier = Modifier.height(10.dp))
 
+        Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_location),
+                contentDescription = null,
+                modifier = Modifier.size(25.dp),
+            )
+
+            Spacer(modifier = Modifier.width(5.dp))
+
+            Text(
+                text = "Lat: ${weatherResponse?.latitude} - Lon: ${weatherResponse?.longitude}",
+                style = MaterialTheme.typography.body1,
+                fontSize = 18.sp,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+
+        }
+
+        val weatherType = currentWeather?.weatherCode?.let { WeatherType.fromWMO(it) }
         Image(
-            painter = painterResource(id = R.drawable.ic_cloudy),
+            painter = painterResource(id = weatherType?.iconRes ?: R.drawable.ic_cloudy),
             contentDescription = null,
             modifier = Modifier
                 .height(200.dp)
@@ -118,7 +151,7 @@ fun CurrentWeatherSection() {
 
         Row(verticalAlignment = Alignment.Top) {
             Text(
-                text = "21",
+                text = "${currentWeather?.temperature}",
                 style = MaterialTheme.typography.h1,
                 fontSize = 100.sp,
                 color = Color.White,
@@ -132,12 +165,11 @@ fun CurrentWeatherSection() {
         }
 
         Text(
-            text = "ThunderStorm",
+            text = weatherType?.weatherDesc ?: "null",
             style = MaterialTheme.typography.body1,
             fontSize = 20.sp,
             color = Color.White
         )
-
         Text(
             text = "Monday, 17 May",
             style = MaterialTheme.typography.body1,
@@ -150,9 +182,9 @@ fun CurrentWeatherSection() {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(horizontal = 20.dp)
                 .height(1.dp)
                 .background(OffWhite)
-                .padding(horizontal = 20.dp)
         )
 
         Row(
